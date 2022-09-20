@@ -46,6 +46,10 @@ end
 function s.tgfilter(c)
 	return c:IsSetCard(0x0226) and c:IsMonster() and c:IsAbleToGrave()
 end
+--Check for target to send to graveyard
+function s.rcfilter(c)
+	return c:IsCode(gr:GetFirst():GetCode())
+end
 --Does something that fits "filter" exist
 function s.sscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,e:GetHandler())
@@ -63,9 +67,11 @@ end
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		local gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,nil,e,tp)
-		local gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil)
+		gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,e:GetHandler(),e,tp)
+		local rc=Duel.GetMatchingGroup(s.rcfilter, tp, LOCATION_DECK, 0, nil)
+		local gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,rc)
 		if #gr>0 and #gg>0 then
+			Duel.ConfirmCards(tp,gr)
 			Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 			Duel.SendtoGrave(gg,REASON_EFFECT)
 		end
