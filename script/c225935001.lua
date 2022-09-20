@@ -1,5 +1,4 @@
---ホワイトローズ・ドラゴン
---White Rose Dragon
+--VF Bryce
 --Logical Nonsense
 --Substitute ID
 local s,id=GetID()
@@ -38,65 +37,35 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)]]--
 end
 s.listed_names={id}
-s.listed_series={0x1123}
---Check for plant/dragon tuner monster
+s.listed_series={0x0226}
+--Check for "VF" monster
 function s.filter1(c)
-	return c:IsSetCard(0x0226) and not c:IsCode(id)
+	return c:IsSetCard(0x0226) and c:IsMonster()
+end
+--Check for target to send to graveyard
+function s.tgfilter(c)
+	return c:IsSetCard(0x0226) and c:IsMonster() and c:IsAbleToGrave()
 end
 --Does something that fits "filter" exist
 function s.sscon(e,tp,eg,ep,ev,re,r,rp)
+	--return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,e:GetHandler())
 	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,nil)
 end
 --Activation legality
 function s.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
+		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false)
+		and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,e:GetHandler(),1,0,0)
 end
 --Performing the effect of special summoning itself
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
-	end
-end
---Check for "VF" monster
-function s.filter(c,e,tp)
-	return c:IsSetCard(0x0226) and not c:IsCode(id)
-end
---Activation legality
-function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE+LOCATION_HAND,0,1,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE+LOCATION_HAND)
-end
---Performing the effect of special summoning a "Rose Dragon" from hand or GY
-function s.spop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.filter),tp,LOCATION_GRAVE+LOCATION_HAND,0,1,1,nil,e,tp)
-	if #g>0 then
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
-	end
-end
---If this card was used as synchro material
-function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsLocation(LOCATION_GRAVE) and r==REASON_SYNCHRO
-end
---Check for level 4 plant monster
-function s.tgfilter(c)
-	return c:IsRace(RACE_PLANT) and c:IsAbleToGrave() and c:IsLevelAbove(4)
-end
---Activation legality
-function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
-end
---Performing the effect of sending level 4 or lower plant monster from deck to GY
-function s.tgop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoGrave(g,REASON_EFFECT)
+		local g=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,nil,e,tp)
+		if #g>0 then
+			Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+		end
 	end
 end
