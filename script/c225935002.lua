@@ -60,8 +60,8 @@ end
 --Performing the effect of special summoning itself
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 	local targets = Duel.GetTargetCards(e)
-	local gr = targets:GetFirst()
-	local gg = targets:GetNext()
+	local gg = targets:GetFirst()
+	local gr = targets:GetNext()
 	local gs = targets:GetNext()
 	Duel.ConfirmCards(1-tp,gr)
 	Duel.SpecialSummon(gs,0,tp,tp,false,false,POS_FACEUP)
