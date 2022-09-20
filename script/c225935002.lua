@@ -53,7 +53,9 @@ function s.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,e:GetHandler(),e,tp)
 	local rc=Duel.GetMatchingGroup(s.rcfilter, tp, LOCATION_DECK, 0, nil)
 	local gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,rc)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE,Group.CreateGroup():AddCard(gr):AddCard(gg):AddCard(e:GetHandler()),1,0,0)
+	local targets = Group.CreateGroup():AddCard(gr):AddCard(gg):AddCard(e:GetHandler())
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE,targets,3,0,0)
+	Duel.SetTargetCard(targets)
 end
 --Performing the effect of special summoning itself
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
@@ -61,11 +63,9 @@ function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 	local gr = targets.GetFirst()
 	local gg = targets.GetNext()
 	local gs = targets.GetNext()
-	if gr:IsRelateToEffect(e) and gg:IsRelateToEffect(e) and gs:IsRelateToEffect(e) then
-		Duel.ConfirmCards(1-tp,gr)
-		Duel.SpecialSummon(gs,0,tp,tp,false,false,POS_FACEUP)
-		Duel.SendtoGrave(gg,REASON_EFFECT)
-	end
+	Duel.ConfirmCards(1-tp,gr)
+	Duel.SpecialSummon(gs,0,tp,tp,false,false,POS_FACEUP)
+	Duel.SendtoGrave(gg,REASON_EFFECT)
 end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	return r==REASON_EFFECT and re:GetHandler():IsSetCard(0x0226)
