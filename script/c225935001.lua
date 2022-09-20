@@ -48,8 +48,8 @@ function s.tgfilter(c)
 end
 --Does something that fits "filter" exist
 function s.sscon(e,tp,eg,ep,ev,re,r,rp)
-	--return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,e:GetHandler())
-	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,nil)
+	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,e:GetHandler())
+	--return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_HAND,0,1,nil)
 end
 --Activation legality
 function s.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -63,9 +63,11 @@ end
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		local g=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,nil,e,tp)
-		if #g>0 then
+		local gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,nil,e,tp)
+		local gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil)
+		if #gr>0 and #gg>0 then
 			Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+			Duel.SendtoGrave(gg,REASON_EFFECT)
 		end
 	end
 end
