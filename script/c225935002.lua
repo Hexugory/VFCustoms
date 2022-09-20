@@ -50,7 +50,7 @@ function s.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false)
 		and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil) end
-	local gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,e:GetHandler(),e,tp)
+	gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,e:GetHandler(),e,tp)
 	local rc=Duel.GetMatchingGroup(s.rcfilter, tp, LOCATION_DECK, 0, nil)
 	local gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,rc)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE,Group.CreateGroup():AddCard(gr):AddCard(gg):AddCard(e:GetHandler()),1,0,0)
