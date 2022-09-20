@@ -53,7 +53,7 @@ function s.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	gr=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_HAND,0,1,1,e:GetHandler(),e,tp)
 	local rc=Duel.GetMatchingGroup(s.rcfilter, tp, LOCATION_DECK, 0, nil)
 	gg=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,rc)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE,gg:Clone():AddCard(e:GetHander()),1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE,gg:Clone():AddCard(e:GetHandler()),1,0,0)
 end
 --Performing the effect of special summoning itself
 function s.ssop(e,tp,eg,ep,ev,re,r,rp)
